@@ -1,5 +1,6 @@
 mod rpc;
 mod sparkline;
+mod stack_gaps;
 
 use anyhow::{Context, Result};
 use either::Either;
@@ -1262,12 +1263,14 @@ fn print_help() {
     println!("  sync        Sync programs from RPC and download binaries");
     println!("  analyze     Analyze sBPF instructions across all programs");
     println!("  dfg         Perform data-flow graph analysis");
+    println!("  stack-gaps  SIMD-0460 stack frame gap impact analysis");
     println!("  help        Show this help message");
     println!("\nFor command-specific options, use:");
     println!("  program-sync rpc --help");
     println!("  program-sync sync --help");
     println!("  program-sync analyze --help");
     println!("  program-sync dfg --help");
+    println!("  program-sync stack-gaps --help");
     println!();
 }
 
@@ -1773,18 +1776,78 @@ fn main() -> Result<()> {
                         return Ok(());
                     }
                     _ => {
-                        anyhow::bail!(
-                            "Unknown argument: {}. Use 'dfg --help' for usage.",
-                            args[i]
-                        );
+                        anyhow::bail!("Unknown argument: {}. Use 'dfg --help' for usage.", args[i]);
                     }
                 }
             }
 
             dfg_command(uninit_reg, program_dir, disasm, skip_calls)
         }
+        "stack-gaps" => {
+            if args.len() < 3 {
+                stack_gaps::print_help();
+                std::process::exit(1);
+            }
+            let subcmd = &args[2];
+            match subcmd.as_str() {
+                "offsets" => {
+                    let mut program_dir = "programs".to_string();
+                    let mut disasm = false;
+                    let mut ids_out = None;
+                    let mut i = 3;
+                    while i < args.len() {
+                        match args[i].as_str() {
+                            "--dir" => {
+                                if i + 1 < args.len() {
+                                    program_dir = args[i + 1].clone();
+                                    i += 2;
+                                } else {
+                                    anyhow::bail!("--dir requires a directory path");
+                                }
+                            }
+                            "--disasm" => {
+                                disasm = true;
+                                i += 1;
+                            }
+                            "--ids-out" => {
+                                if i + 1 < args.len() {
+                                    ids_out = Some(args[i + 1].clone());
+                                    i += 2;
+                                } else {
+                                    anyhow::bail!("--ids-out requires a file path");
+                                }
+                            }
+                            "--help" | "-h" => {
+                                stack_gaps::print_help();
+                                return Ok(());
+                            }
+                            _ => {
+                                anyhow::bail!(
+                                    "Unknown argument: {}. Use 'stack-gaps offsets --help' for usage.",
+                                    args[i]
+                                );
+                            }
+                        }
+                    }
+                    stack_gaps::offsets_command(program_dir, disasm, ids_out)
+                }
+                "--help" | "-h" | "help" => {
+                    stack_gaps::print_help();
+                    Ok(())
+                }
+                _ => {
+                    anyhow::bail!(
+                        "Unknown stack-gaps subcommand: '{}'. Use 'stack-gaps --help' for usage.",
+                        subcmd
+                    );
+                }
+            }
+        }
         _ => {
-            anyhow::bail!("Unknown command: {}. Use 'rpc', 'sync', 'analyze', or 'dfg'", command);
+            anyhow::bail!(
+                "Unknown command: {}. Use 'sync', 'analyze', 'dfg', 'rpc', or 'stack-gaps'",
+                command
+            );
         }
     }
 }
