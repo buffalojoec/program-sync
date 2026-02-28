@@ -5,19 +5,27 @@
 //! analysis passes that scan program binaries for memory accesses that would
 //! change behavior after the gap removal.
 
+use super::DummyContextObject;
 use anyhow::{Context, Result};
 use either::Either;
 use indicatif::{ProgressBar, ProgressStyle};
 use rayon::prelude::*;
 use sbpf_common::opcode::{Opcode, LOAD_MEMORY_OPS, STORE_IMM_OPS, STORE_REG_OPS};
 use sbpf_disassembler::program::Program;
+use solana_sbpf::{
+    ebpf,
+    elf::Executable,
+    program::BuiltinProgram,
+    static_analysis::Analysis,
+    vm::Config,
+};
 use std::collections::HashMap;
 use std::fmt;
 use std::io::Write;
 use std::fs;
 use std::path::Path;
 use std::sync::atomic::{AtomicUsize, Ordering};
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 
 // ---------------------------------------------------------------------------
 // Gap-band classification
@@ -58,8 +66,8 @@ impl fmt::Display for GapBand {
     }
 }
 
-/// Check whether an i16 offset from r10 lands in a stack frame gap band.
-fn classify_gap_offset(offset: i16) -> Option<GapBand> {
+/// Check whether an offset from r10 lands in a stack frame gap band.
+fn classify_gap_offset(offset: i64) -> Option<GapBand> {
     if (0..=4095).contains(&offset) {
         Some(GapBand::Positive)
     } else if (-8192..=-4097).contains(&offset) {
@@ -252,7 +260,7 @@ pub fn offsets_command(program_dir: String, disasm: bool, ids_out: Option<String
             if let Some(base_reg) = memory_base_reg_num(instruction) {
                 if base_reg == 10 {
                     if let Some(Either::Right(offset)) = &instruction.off {
-                        if let Some(gap_band) = classify_gap_offset(*offset) {
+                        if let Some(gap_band) = classify_gap_offset(*offset as i64) {
                             let disasm_text = if disasm {
                                 format_memory_insn(instruction)
                             } else {
@@ -458,6 +466,450 @@ pub fn offsets_command(program_dir: String, disasm: bool, ids_out: Option<String
     Ok(())
 }
 
+/// Check whether an ebpf opcode is a memory load instruction.
+///
+/// Loads read from `[src + off]` and write the result to `dst`.
+fn is_ebpf_load(opc: u8) -> bool {
+    matches!(
+        opc,
+        ebpf::LD_B_REG
+            | ebpf::LD_H_REG
+            | ebpf::LD_W_REG
+            | ebpf::LD_DW_REG
+            | ebpf::LD_1B_REG
+            | ebpf::LD_2B_REG
+            | ebpf::LD_4B_REG
+            | ebpf::LD_8B_REG
+    )
+}
+
+/// Check whether an ebpf opcode is a store-immediate instruction.
+///
+/// Store-imm writes `imm` to `[dst + off]`. Does NOT modify any register.
+fn is_ebpf_store_imm(opc: u8) -> bool {
+    matches!(
+        opc,
+        ebpf::ST_B_IMM
+            | ebpf::ST_H_IMM
+            | ebpf::ST_W_IMM
+            | ebpf::ST_DW_IMM
+            | ebpf::ST_1B_IMM
+            | ebpf::ST_2B_IMM
+            | ebpf::ST_4B_IMM
+            | ebpf::ST_8B_IMM
+    )
+}
+
+/// Check whether an ebpf opcode is a store-register instruction.
+///
+/// Store-reg writes `src` to `[dst + off]`. Does NOT modify any register.
+fn is_ebpf_store_reg(opc: u8) -> bool {
+    matches!(
+        opc,
+        ebpf::ST_B_REG
+            | ebpf::ST_H_REG
+            | ebpf::ST_W_REG
+            | ebpf::ST_DW_REG
+            | ebpf::ST_1B_REG
+            | ebpf::ST_2B_REG
+            | ebpf::ST_4B_REG
+            | ebpf::ST_8B_REG
+    )
+}
+
+/// Read ELF e_flags from raw bytes (64-bit ELF, little-endian, offset 0x30).
+fn read_elf_e_flags(elf_data: &[u8]) -> u32 {
+    if elf_data.len() >= 52 {
+        u32::from_le_bytes([elf_data[48], elf_data[49], elf_data[50], elf_data[51]])
+    } else {
+        0
+    }
+}
+
+/// A single gap-band hit from the Tier 2 trace pass.
+struct TraceHit {
+    /// Program counter of the memory instruction.
+    pc: usize,
+    /// Effective offset from r10 (`tracked_offset + insn.off`).
+    effective_offset: i64,
+    /// Which gap band the effective offset falls in.
+    gap_band: GapBand,
+    /// Register used as memory base address.
+    base_reg: u8,
+    /// The tracked r10 offset for `base_reg` before adding `insn.off`.
+    tracked_offset: i64,
+    /// Whether this is a derived pointer hit (`base_reg != 10`).
+    derived: bool,
+    /// Disassembly text (empty if `--disasm` not set).
+    disasm_text: String,
+}
+
+/// Scan all programs for gap-band accesses using intra-block constant
+/// propagation of r10-derived pointers.
+///
+/// This is the Tier 2 detection pass for SIMD-0460 impact analysis. It
+/// builds on Tier 1 by detecting not only direct r10-based memory accesses
+/// but also accesses through derived pointers — registers that hold
+/// `r10 +/- known_constant`.
+///
+/// ## Algorithm
+///
+/// Uses `Analysis::from_executable` to build a CFG. For each basic block,
+/// walks instructions sequentially maintaining a register map:
+///
+///   `reg_map: [Option<i64>; 11]` — `Some(off)` means the register holds
+///   the value `r10 + off`. `None` means unknown / not r10-derived.
+///
+/// At block entry, all registers are `None` except `r10 = Some(0)`.
+///
+/// Propagation rules:
+///   - `mov64 rN, rM`: rN inherits rM's tracking state
+///   - `add64 rN, imm` where rN is tracked: offset += imm
+///   - `sub64 rN, imm` where rN is tracked: offset -= imm
+///   - `call`: clobber r0-r5 (caller-saved registers)
+///   - Store instructions: no register modification
+///   - All other writes to rN: kill tracking (`rN = None`)
+///
+/// At each memory operation, if the base register is tracked, the effective
+/// offset `tracked_offset + insn.off` is checked against gap bands.
+///
+/// This catches patterns like:
+///
+/// ```text
+///   mov64 r1, r10
+///   add64 r1, -5000
+///   stxdw [r1+0], r2     ← effective offset = -5000, negative gap
+/// ```
+///
+/// This pass produces a superset of Tier 1 results: direct r10 hits are
+/// included since r10 is always tracked as `Some(0)`.
+pub fn trace_command(program_dir: String, disasm: bool, ids_out: Option<String>) -> Result<()> {
+    println!("\nStack Frame Gap Analysis — Derived Pointer Trace");
+    println!("{}", "=".repeat(60));
+
+    if !Path::new(&program_dir).exists() {
+        anyhow::bail!("Directory '{}' not found. Run sync first.", program_dir);
+    }
+
+    let entries = fs::read_dir(&program_dir)?;
+    let so_files: Vec<_> = entries
+        .filter_map(|e| e.ok())
+        .filter(|e| e.path().extension().map(|ext| ext == "so").unwrap_or(false))
+        .collect();
+
+    println!("Found {} .so files to analyze", so_files.len());
+    println!("Tracing r10-derived pointers through basic blocks");
+    println!();
+
+    let pb = ProgressBar::new(so_files.len() as u64);
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template("  [{bar:40.green/black}] {pos}/{len}")
+            .unwrap()
+            .progress_chars("█▓░"),
+    );
+
+    // Per-program results: (pubkey, e_flags, hits).
+    let flagged: Mutex<Vec<(String, u32, Vec<TraceHit>)>> = Mutex::new(Vec::new());
+    let files_processed = AtomicUsize::new(0);
+    let files_with_errors = AtomicUsize::new(0);
+    let error_log = Mutex::new(Vec::<(String, String)>::new());
+    let total_direct = AtomicUsize::new(0);
+    let total_derived = AtomicUsize::new(0);
+
+    so_files.par_iter().for_each(|entry| {
+        let path = entry.path();
+        let filename = path
+            .file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or("unknown")
+            .to_string();
+        let pubkey = path.file_stem().unwrap().to_string_lossy().to_string();
+
+        let elf_data = match fs::read(&path) {
+            Ok(data) => data,
+            Err(e) => {
+                files_with_errors.fetch_add(1, Ordering::Relaxed);
+                error_log
+                    .lock()
+                    .unwrap()
+                    .push((filename, format!("Read error: {}", e)));
+                pb.inc(1);
+                return;
+            }
+        };
+
+        let e_flags = read_elf_e_flags(&elf_data);
+
+        let loader =
+            Arc::new(BuiltinProgram::<DummyContextObject>::new_loader(Config::default()));
+        let executable = match Executable::<DummyContextObject>::load(&elf_data, loader) {
+            Ok(e) => e,
+            Err(e) => {
+                files_with_errors.fetch_add(1, Ordering::Relaxed);
+                error_log
+                    .lock()
+                    .unwrap()
+                    .push((filename, format!("ELF load error: {}", e)));
+                pb.inc(1);
+                return;
+            }
+        };
+
+        let analysis = match Analysis::from_executable(&executable) {
+            Ok(a) => a,
+            Err(e) => {
+                files_with_errors.fetch_add(1, Ordering::Relaxed);
+                error_log
+                    .lock()
+                    .unwrap()
+                    .push((filename, format!("Analysis error: {}", e)));
+                pb.inc(1);
+                return;
+            }
+        };
+
+        let mut hits = Vec::new();
+
+        // Walk each basic block with intra-block register tracking.
+        for (_block_pc, block) in &analysis.cfg_nodes {
+            if block.instructions.is_empty() {
+                continue;
+            }
+
+            // Register map: r10 is always r10+0, everything else unknown.
+            let mut reg_map: [Option<i64>; 11] = [None; 11];
+            reg_map[10] = Some(0);
+
+            for insn_idx in block.instructions.clone() {
+                let insn = &analysis.instructions[insn_idx];
+
+                // --- Step 1: Check memory ops for gap-band access ---
+                //
+                // For loads, the base register is src.
+                // For stores, the base register is dst.
+                let mem_base = if is_ebpf_load(insn.opc) {
+                    Some(insn.src)
+                } else if is_ebpf_store_imm(insn.opc) || is_ebpf_store_reg(insn.opc) {
+                    Some(insn.dst)
+                } else {
+                    None
+                };
+
+                if let Some(base) = mem_base {
+                    if (base as usize) <= 10 {
+                        if let Some(tracked_off) = reg_map[base as usize] {
+                            let effective_offset = tracked_off + insn.off as i64;
+                            if let Some(gap_band) = classify_gap_offset(effective_offset) {
+                                let disasm_text = if disasm {
+                                    analysis.disassemble_instruction(insn, insn.ptr)
+                                } else {
+                                    String::new()
+                                };
+                                hits.push(TraceHit {
+                                    pc: insn.ptr,
+                                    effective_offset,
+                                    gap_band,
+                                    base_reg: base,
+                                    tracked_offset: tracked_off,
+                                    derived: base != 10,
+                                    disasm_text,
+                                });
+                            }
+                        }
+                    }
+                }
+
+                // --- Step 2: Update register tracking ---
+                //
+                // Propagation rules:
+                //   mov64 rN, rM  → rN inherits rM's tracking
+                //   add64 rN, imm → if rN tracked, offset += imm
+                //   sub64 rN, imm → if rN tracked, offset -= imm
+                //   call          → clobber r0-r5
+                //   stores/exit   → no register writes
+                //   everything else → kill tracking for dst
+                match insn.opc {
+                    ebpf::MOV64_REG => {
+                        let dst = insn.dst as usize;
+                        let src = insn.src as usize;
+                        if dst <= 10 {
+                            reg_map[dst] = if src <= 10 { reg_map[src] } else { None };
+                        }
+                    }
+                    ebpf::ADD64_IMM => {
+                        let dst = insn.dst as usize;
+                        if dst <= 10 {
+                            reg_map[dst] =
+                                reg_map[dst].map(|off| off.wrapping_add(insn.imm));
+                        }
+                    }
+                    ebpf::SUB64_IMM => {
+                        let dst = insn.dst as usize;
+                        if dst <= 10 {
+                            reg_map[dst] =
+                                reg_map[dst].map(|off| off.wrapping_sub(insn.imm));
+                        }
+                    }
+                    ebpf::CALL_IMM | ebpf::CALL_REG => {
+                        // Calls clobber caller-saved registers r0-r5.
+                        for r in 0..=5 {
+                            reg_map[r] = None;
+                        }
+                    }
+                    opc if is_ebpf_store_imm(opc) || is_ebpf_store_reg(opc) => {
+                        // Stores don't write to any register.
+                    }
+                    ebpf::EXIT => {}
+                    _ => {
+                        // Any other instruction that writes to dst: kill tracking.
+                        // This conservatively handles ALU ops, loads, lddw, etc.
+                        let dst = insn.dst as usize;
+                        if dst <= 10 {
+                            reg_map[dst] = None;
+                        }
+                    }
+                }
+            }
+        }
+
+        if !hits.is_empty() {
+            let direct = hits.iter().filter(|h| !h.derived).count();
+            let derived = hits.iter().filter(|h| h.derived).count();
+            total_direct.fetch_add(direct, Ordering::Relaxed);
+            total_derived.fetch_add(derived, Ordering::Relaxed);
+            flagged.lock().unwrap().push((pubkey, e_flags, hits));
+        }
+
+        files_processed.fetch_add(1, Ordering::Relaxed);
+        pb.inc(1);
+    });
+
+    pb.finish_and_clear();
+
+    let mut flagged = flagged.into_inner().unwrap();
+    flagged.sort_by(|a, b| a.0.cmp(&b.0));
+    let files_processed = files_processed.load(Ordering::Relaxed);
+    let files_with_errors = files_with_errors.load(Ordering::Relaxed);
+    let error_log = error_log.into_inner().unwrap();
+    let total_direct = total_direct.load(Ordering::Relaxed);
+    let total_derived = total_derived.load(Ordering::Relaxed);
+
+    // Tally flagged programs by SBPF version.
+    let mut version_counts: HashMap<u32, usize> = HashMap::new();
+    for (_, version, _) in &flagged {
+        *version_counts.entry(*version).or_insert(0) += 1;
+    }
+
+    println!("\n{}", "=".repeat(60));
+    println!("RESULTS");
+    println!("{}", "=".repeat(60));
+    println!("Files processed:       {}", files_processed);
+    println!("Files with errors:     {}", files_with_errors);
+    println!("Programs flagged:      {}", flagged.len());
+    println!(
+        "Total gap-band hits:   {} ({} direct, {} derived)",
+        total_direct + total_derived,
+        total_direct,
+        total_derived
+    );
+    println!();
+
+    if !error_log.is_empty() {
+        println!("Errors encountered:");
+        println!("{}", "-".repeat(60));
+        for (filename, error) in &error_log {
+            println!("  {}: {}", filename, error);
+        }
+        println!();
+    }
+
+    if !version_counts.is_empty() {
+        println!("Flagged programs by SBPF version:");
+        println!("{}", "-".repeat(60));
+        let mut versions: Vec<_> = version_counts.into_iter().collect();
+        versions.sort_by_key(|(v, _)| *v);
+        for (version, count) in &versions {
+            println!("  {}: {} program(s)", sbpf_version_label(*version), count);
+        }
+        println!();
+    }
+
+    if flagged.is_empty() {
+        println!("No programs with gap-band accesses found.");
+    } else {
+        println!("Flagged programs:");
+        println!("{}", "-".repeat(60));
+        for (pubkey, version, hits) in &flagged {
+            let direct_count = hits.iter().filter(|h| !h.derived).count();
+            let derived_count = hits.iter().filter(|h| h.derived).count();
+            let pos_count = hits
+                .iter()
+                .filter(|h| matches!(h.gap_band, GapBand::Positive))
+                .count();
+            let neg_count = hits
+                .iter()
+                .filter(|h| matches!(h.gap_band, GapBand::Negative))
+                .count();
+
+            if disasm {
+                println!(
+                    "\n  {} (SBPF {}, {} hit(s): {} direct, {} derived, {} pos, {} neg):",
+                    pubkey,
+                    sbpf_version_label(*version),
+                    hits.len(),
+                    direct_count,
+                    derived_count,
+                    pos_count,
+                    neg_count,
+                );
+                for hit in hits {
+                    let source = if hit.derived {
+                        format!(
+                            "r{}=r10{:+}, derived",
+                            hit.base_reg, hit.tracked_offset
+                        )
+                    } else {
+                        "direct".to_string()
+                    };
+                    println!(
+                        "    pc {:>5}: {}  (eff_off={:+}, {}, {})",
+                        hit.pc, hit.disasm_text, hit.effective_offset, hit.gap_band, source
+                    );
+                }
+            } else {
+                let pcs: Vec<usize> = hits.iter().map(|h| h.pc).collect();
+                println!(
+                    "  {} (SBPF {}, {} hit(s): {} direct/{} derived, {} pos/{} neg) pc {:?}",
+                    pubkey,
+                    sbpf_version_label(*version),
+                    hits.len(),
+                    direct_count,
+                    derived_count,
+                    pos_count,
+                    neg_count,
+                    pcs
+                );
+            }
+        }
+    }
+
+    println!("{}", "=".repeat(60));
+
+    if let Some(path) = ids_out {
+        let mut f = fs::File::create(&path)
+            .with_context(|| format!("Failed to create {}", path))?;
+        let mut written = 0usize;
+        for (pubkey, _, _) in &flagged {
+            writeln!(f, "{}", pubkey)?;
+            written += 1;
+        }
+        println!("Wrote {} program IDs to {}", written, path);
+    }
+
+    Ok(())
+}
+
 pub fn print_help() {
     println!("STACK-GAPS");
     println!("\nUSAGE:");
@@ -468,7 +920,8 @@ pub fn print_help() {
     println!("  behavior when stack frame gaps are removed.");
     println!("\nSUBCOMMANDS:");
     println!("  offsets     Scan r10-based memory ops for gap-band offsets (Tier 1)");
-    println!("\nOPTIONS (offsets):");
+    println!("  trace       Trace r10-derived pointers through basic blocks (Tier 2)");
+    println!("\nOPTIONS (offsets, trace):");
     println!("  --dir <PATH>      Program directory (default: programs)");
     println!("  --disasm          Show disassembled instructions at each location");
     println!("  --help, -h        Show this help message");
@@ -476,11 +929,14 @@ pub fn print_help() {
     println!("  Positive: offsets [0, +4095] from r10 — gap above the current frame");
     println!("  Negative: offsets [-8192, -4097] from r10 — gap below the current frame");
     println!("\nEXAMPLES:");
-    println!("  # Scan all programs for gap-band offsets");
+    println!("  # Scan all programs for gap-band offsets (fast, Tier 1)");
     println!("  program-sync stack-gaps offsets");
     println!();
+    println!("  # Trace derived pointers through basic blocks (Tier 2, superset of Tier 1)");
+    println!("  program-sync stack-gaps trace");
+    println!();
     println!("  # With disassembly output");
-    println!("  program-sync stack-gaps offsets --disasm");
+    println!("  program-sync stack-gaps trace --disasm");
     println!();
     println!("  # Custom program directory");
     println!("  program-sync stack-gaps offsets --dir /path/to/programs");

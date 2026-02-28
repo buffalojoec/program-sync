@@ -32,7 +32,7 @@ use rpc::{
 };
 
 /// Dummy context object for static analysis (no execution needed)
-struct DummyContextObject;
+pub(crate) struct DummyContextObject;
 impl ContextObject for DummyContextObject {
     fn consume(&mut self, _amount: u64) {}
     fn get_remaining(&self) -> u64 {
@@ -1830,6 +1830,47 @@ fn main() -> Result<()> {
                         }
                     }
                     stack_gaps::offsets_command(program_dir, disasm, ids_out)
+                }
+                "trace" => {
+                    let mut program_dir = "programs".to_string();
+                    let mut disasm = false;
+                    let mut ids_out = None;
+                    let mut i = 3;
+                    while i < args.len() {
+                        match args[i].as_str() {
+                            "--dir" => {
+                                if i + 1 < args.len() {
+                                    program_dir = args[i + 1].clone();
+                                    i += 2;
+                                } else {
+                                    anyhow::bail!("--dir requires a directory path");
+                                }
+                            }
+                            "--disasm" => {
+                                disasm = true;
+                                i += 1;
+                            }
+                            "--ids-out" => {
+                                if i + 1 < args.len() {
+                                    ids_out = Some(args[i + 1].clone());
+                                    i += 2;
+                                } else {
+                                    anyhow::bail!("--ids-out requires a file path");
+                                }
+                            }
+                            "--help" | "-h" => {
+                                stack_gaps::print_help();
+                                return Ok(());
+                            }
+                            _ => {
+                                anyhow::bail!(
+                                    "Unknown argument: {}. Use 'stack-gaps trace --help' for usage.",
+                                    args[i]
+                                );
+                            }
+                        }
+                    }
+                    stack_gaps::trace_command(program_dir, disasm, ids_out)
                 }
                 "--help" | "-h" | "help" => {
                     stack_gaps::print_help();
