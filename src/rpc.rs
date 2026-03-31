@@ -413,45 +413,9 @@ const USAGE_CHUNK_SIZE: usize = 10;
 const USAGE_CHUNK_SLEEP_SECS: u64 = 5;
 
 /// Build a slot distribution sparkline for a set of signature slots.
-///
-/// Divides the range [oldest_slot, current_slot] into `num_buckets` equal-width
-/// buckets and counts how many signatures land in each. Returns a string like
-/// "▁▂▅▇█" where left = oldest, right = most recent.
 fn slot_sparkline(sig_slots: &[u64], current_slot: u64, num_buckets: usize) -> String {
-    if sig_slots.is_empty() || num_buckets == 0 {
-        return String::new();
-    }
-
-    let oldest = *sig_slots.iter().min().unwrap();
-    let range = current_slot.saturating_sub(oldest);
-    if range == 0 {
-        // All signatures in same slot
-        return "█".repeat(num_buckets);
-    }
-
-    let bucket_width = (range as f64) / (num_buckets as f64);
-    let mut buckets = vec![0u32; num_buckets];
-
-    for &slot in sig_slots {
-        let idx = ((slot.saturating_sub(oldest) as f64) / bucket_width) as usize;
-        let idx = idx.min(num_buckets - 1);
-        buckets[idx] += 1;
-    }
-
-    let max_count = *buckets.iter().max().unwrap_or(&1);
-    let bars = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'];
-
-    buckets
-        .iter()
-        .map(|&count| {
-            if count == 0 {
-                ' '
-            } else {
-                let level = ((count as f64 / max_count as f64) * 7.0) as usize;
-                bars[level.min(7)]
-            }
-        })
-        .collect()
+    let values: Vec<i64> = sig_slots.iter().map(|&s| s as i64).collect();
+    super::sparkline::sparkline(&values, num_buckets, Some(current_slot as i64))
 }
 
 /// Format a slot count with a human-readable time estimate.

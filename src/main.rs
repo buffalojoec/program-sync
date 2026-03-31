@@ -1,4 +1,5 @@
 mod rpc;
+mod sparkline;
 
 use anyhow::{Context, Result};
 use either::Either;
