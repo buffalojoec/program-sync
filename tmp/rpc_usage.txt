@@ -1,0 +1,236 @@
+warning: use of deprecated method `solana_client::rpc_client::RpcClient::get_program_accounts_with_config`: Use `get_program_ui_accounts_with_config()` instead. This function will be removed in a future version of `solana_rpc_client`.
+   --> src/rpc.rs:209:31
+    |
+209 |     let accounts = rpc_client.get_program_accounts_with_config(&loader_pubkey, config)?;
+    |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated method `solana_client::rpc_client::RpcClient::get_program_accounts_with_config`: Use `get_program_ui_accounts_with_config()` instead. This function will be removed in a future version of `solana_rpc_client`.
+   --> src/rpc.rs:271:31
+    |
+271 |     let accounts = rpc_client.get_program_accounts_with_config(&loader_pubkey, config)?;
+    |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `program-sync` (bin "program-sync") generated 2 warnings
+    Finished `release` profile [optimized] target(s) in 0.77s
+     Running `target/release/program-sync rpc usage --file ./tmp/tier1_v0_ids.txt`
+
+RPC Usage
+Network:       mainnet
+Programs:      189
+Sig limit:     300 (RPC max 1000, clamped)
+Current slot:  410013013
+Output:        rpc-out/1774929957-usage-mainnet.txt
+
+  1ouiEMkHYC49LRDp1ZxcZWj9bJn4ah4k6KXyaquYDH3  sigs: 300+/300  newest: 367566063  oldest: 312942173  span: 54623890  age: 196.5d (42446950 slots)  [█▁▁▁▁▁    ]
+  21mVY8WyDwo6uDEktxW7A1vMGFgonEFHZtyfnbfM8U5A  sigs: 300+/300  newest: 407216088  oldest: 403627973  span: 3588115  age: 12.9d (2796925 slots)  [▆▇█▃▂▁    ]
+  2G5cApuDirL7mdS53iJiHy7yuJiEDxGm5pXD5o1NeSR4  sigs: 300+/300  newest: 323346082  oldest: 253069300  span: 70276782  age: 401.2d (86666931 slots)  [█▃▁▃▁     ]
+  2Vo62sEv1QAVRwbxBHWi9dxpxvWiN37D4VkGAdA627fT  sigs: 188/300  newest: 405703636  oldest: 383923140  span: 21780496  age: 20.0d (4309377 slots)  [█▃      ▁ ]
+  2f7mzs8Hqra1L6aLCEdoR4inNtNBFmNgsiuJMr8q2x7A  sigs: 3/300  newest: 364362516  oldest: 363914233  span: 448283  age: 211.3d (45650497 slots)  [█         ]
+  2h2KDqUHkHf7DVUd3SJCeEPPLMLiYuviojp3YFJgMnZN  sigs: 59/300  newest: 377595296  oldest: 373227007  span: 4368289  age: 150.1d (32417717 slots)  [█▄        ]
+  2hMjxbMN3HP3PAf3czMjZcPPrXx2SPj45MsdrCv4KfWc  sigs: 300+/300  newest: 410012822  oldest: 402475532  span: 7537290  age: 1.3m (191 slots)  [█▄▇▆▅▅▇▅▆▃]
+  2rwUXt3JeyPtUBjH5pscZLRDBoh9WADfXq7gyoDnLcC4  sigs: 300+/300  newest: 410006452  oldest: 408943726  span: 1062726  age: 43.7m (6561 slots)  [▄▃█▁▅▁▃▁▃▁]
+  39if7RWgfxqgToMKNvNwHDPGuWWcZNpG1yHniPWYqpy6  sigs: 300+/300  newest: 409966508  oldest: 401111076  span: 8855432  age: 5.2h (46505 slots)  [▂█▁ ▁▄▃ ▁▂]
+  3HUeooitcfKX1TSCx2xEpg2W31n6Qfmizu7nnbaEWYzs  sigs: 300+/300  newest: 395013981  oldest: 382500122  span: 12513859  age: 69.4d (14999032 slots)  [█   ▁     ]
+  ... sleeping 5s before next chunk (2/19) ...
+  3YjbhTN5JyroqLAqe52jPKrGTzDFCjXEGiaUXaJQgNks  sigs: 1/300  newest: 401418530  oldest: 401418530  span: 0  age: 39.8d (8594483 slots)  [█         ]
+  3cGBXPGwCxiM8DkLCKxNU7fgMzjGEQPPEdqQaQcYji4t  sigs: 300+/300  newest: 333881587  oldest: 333031590  span: 849997  age: 352.5d (76131426 slots)  [█         ]
+  3fs1S7gm734iAn4U3kXmssz3Q58DyJEwngW6wEahWXfe  sigs: 1/300  newest: 369032844  oldest: 369032844  span: 0  age: 189.7d (40980169 slots)  [█         ]
+  3sVB5a8RL4gvKeW8HSXe2jPUfJPnUyqZHR2Q2tC1aTAq  sigs: 1/300  newest: 319279880  oldest: 319279880  span: 0  age: 420.1d (90733133 slots)  [█         ]
+  3v8To2mGoxkPqAXiDPCWrigDXkjpdZPNSTaeF14CpxfL  sigs: 300+/300  newest: 410012775  oldest: 409943626  span: 69149  age: 1.6m (238 slots)  [█▇▇▇▇▇▇▇▇▇]
+  3xbUHCmwiWSagQxsHnDBWzf83veyZWRjnZQsZUjxvwRS  sigs: 300+/300  newest: 352231635  oldest: 195662726  span: 156568909  age: 267.5d (57781378 slots)  [█▁▁    ▁  ]
+  44vxtqq7hx2UTcogDU4mraoPD2775QMUza4oBg29p9BX  sigs: 300+/300  newest: 406623780  oldest: 376728287  span: 29895493  age: 15.7d (3389233 slots)  [█       ▁ ]
+  47ywDoTREifEpTYWRVz3tDNypu456BCDaX22SnfRKhko  sigs: 300+/300  newest: 409673938  oldest: 386447634  span: 23226304  age: 1.6d (339075 slots)  [█▆▇▆▄▅▃▆▅▂]
+  4AfgTdc54VCwNXjomhMCMR5PusnjfVSyvqCyTutXA1YW  sigs: 300+/300  newest: 321735292  oldest: 321734237  span: 1055  age: 408.7d (88277721 slots)  [█         ]
+  4FACvuyBqoAaZYapbyZvfCW8Dcj9pC4rbLWb5bmR34mg  sigs: 3/300  newest: 123833683  oldest: 123180644  span: 653039  age: 1324.9d (286179330 slots)  [█         ]
+  ... sleeping 5s before next chunk (3/19) ...
+  4LFFiWbef8NqzMkuGuuNqsmkRLmf7aaduwZyBxY1FgJo  sigs: 13/300  newest: 87760721  oldest: 84150195  span: 3610526  age: 1491.9d (322252292 slots)  [█         ]
+  4SzqMniGJzLUta6TwDpFrYMZtVugpCqdtZqHUYHi8YHa  sigs: 2/300  newest: 150054111  oldest: 150053797  span: 314  age: 1203.5d (259958902 slots)  [█         ]
+  4VvtzdAox26F7MxznG7njxW6dbTe2Cp4aHUykaXHxeDx  sigs: 1/300  newest: 321997503  oldest: 321997503  span: 0  age: 407.5d (88015510 slots)  [█         ]
+  4WPxDFzVjMkQky9SiVGDrgoacEn88cgWAJS9LJ4x9HfY  sigs: 62/300  newest: 336316124  oldest: 336315871  span: 253  age: 341.2d (73696889 slots)  [█         ]
+  4YLBGBauWQrsSckrFDXddZxxFxG4hffP9Y6yurLnPykG  sigs: 300+/300  newest: 397853440  oldest: 397803524  span: 49916  age: 56.3d (12159573 slots)  [█         ]
+  4p3xdu7sWV5eZmTxMb2beeR8tkWvaBGv1bbbUG5acLEr  sigs: 1/300  newest: 324160934  oldest: 324160934  span: 0  age: 397.5d (85852079 slots)  [█         ]
+  4xtVBUFoAHLa6y143Q7ARe4gWKkAS6Fs3k6oGoMvqyva  sigs: 300+/300  newest: 408739848  oldest: 404105614  span: 4634234  age: 5.9d (1273165 slots)  [▂▄█ ▁▁▁▂  ]
+  5QdGYnxjGqYvL1PWTvHiayWUDcFeWvyHL6vHsfNL3yJE  sigs: 2/300  newest: 355191444  oldest: 355189926  span: 1518  age: 253.8d (54821569 slots)  [█         ]
+  5gW4pLwsb5YRhciVRZWjDinAqkEaoQrn2ze59yQW3TfN  sigs: 8/300  newest: 365584068  oldest: 365583932  span: 136  age: 205.7d (44428945 slots)  [█         ]
+  69xbuiwsPHmKmY6kQmsjavXtwQu7hf4jPJ5SACrmvd29  sigs: 300+/300  newest: 248529684  oldest: 131964593  span: 116565091  age: 747.6d (161483329 slots)  [█  ▁▁     ]
+  ... sleeping 5s before next chunk (4/19) ...
+  6DLRiCginjFyHMXManZvEpxctmBSYUrzBn7RrdcrDRFw  sigs: 300+/300  newest: 401344189  oldest: 358284788  span: 43059401  age: 40.1d (8668824 slots)  [█▃▂▂▁ ▁▁▁ ]
+  6SccAZnFDr8jBbdbPfqVav6EKEKbYZBU382CThZ1ormk  sigs: 300+/300  newest: 364821705  oldest: 360700765  span: 4120940  age: 209.2d (45191308 slots)  [█         ]
+  6eqr7wETF1YRsMNQkTqTVrDNFWc4JgBMwWkNAKQprgHZ  sigs: 300+/300  newest: 318537400  oldest: 260325025  span: 58212375  age: 423.5d (91475613 slots)  [█▁▁▁      ]
+  6xhpdhwyzpjxc6n2KqQS8a3W7Busn6nqGYaobVV25kN5  sigs: 15/300  newest: 338471281  oldest: 338313838  span: 157443  age: 331.2d (71541732 slots)  [█         ]
+  767yanksU7RxR8dDtRyw79jAFMriSvrbXgjqsiZKUCmN  sigs: 5/300  newest: 357661712  oldest: 357648897  span: 12815  age: 242.4d (52351301 slots)  [█         ]
+  76HDbMScCoGcA2G97uYiTs1HHPJH321mrVb6WyZg9yPB  sigs: 30/300  newest: 246263625  oldest: 246255747  span: 7878  age: 758.1d (163749388 slots)  [█         ]
+  79PaERq5AvVSZMvbZNao7R8AjPhzhD1jeS7DK9ao3umY  sigs: 1/300  newest: 362682000  oldest: 362682000  span: 0  age: 219.1d (47331013 slots)  [█         ]
+  7JmKktS89Lmn5e9xj7Lxp5giRxYHCUXEBkyuCBuqBvfy  sigs: 300+/300  newest: 345325739  oldest: 289931157  span: 55394582  age: 299.5d (64687274 slots)  [█▁  ▃     ]
+  7PwsaByb6Uvzuc1uUUbJrAdtL7wtRXKWHsVtT3nbSDvs  sigs: 34/300  newest: 154976331  oldest: 154143189  span: 833142  age: 1180.7d (255036682 slots)  [█         ]
+  7Tmdy5WxbM9DgE4qwdMLGDdrSh5s5z7gWGdQWPTveCMg  sigs: 10/300  newest: 400859990  oldest: 353631978  span: 47228012  age: 42.4d (9153023 slots)  [█       ▁ ]
+  ... sleeping 5s before next chunk (5/19) ...
+  7dPr9v5vt7uD8zTs6NZocSm45uBH6ZESnCcdWwUqoLV  sigs: 2/300  newest: 365431472  oldest: 365419723  span: 11749  age: 206.4d (44581541 slots)  [█         ]
+  7fEvnVYgDkZfT6JkffusC5f2vcRRMdd6dZqAAWURek61  sigs: 26/300  newest: 371325165  oldest: 314136641  span: 57188524  age: 179.1d (38687848 slots)  [█   ▂▁    ]
+  7s66SoJ9nEf8JssXbCJbrZAbNs32ZzWhjmbCPVtaJZg5  sigs: 4/300  newest: 402131753  oldest: 401888800  span: 242953  age: 36.5d (7881260 slots)  [█         ]
+  7tQs1g6CGHAJAUdw1F3EXfxbiaa2aCHjab39YShPL1Xw  sigs: 1/300  newest: 342625532  oldest: 342625532  span: 0  age: 312.0d (67387481 slots)  [█         ]
+  85vbgUdHrtjsWg42psbrAPmwyFTDiJZCBQJKXZqFPVAV  sigs: 300+/300  newest: 221153580  oldest: 169343055  span: 51810525  age: 874.3d (188859433 slots)  [█▄▁       ]
+  86dsQeMpQW5m1LpyPQ1Ss7GpViW3moUwF5YsPH1ibFee  sigs: 1/300  newest: 365461292  oldest: 365461292  span: 0  age: 206.3d (44551721 slots)  [█         ]
+  8888882FsxBq7dmc4N1zcMWSKbbsuKgXvfUif2P7S6K6  sigs: 300+/300  newest: 276137627  oldest: 274273459  span: 1864168  age: 619.8d (133875386 slots)  [█         ]
+  8JDr8QsKd1oKPvSmtKvZgfd3oz9abDihD8JneRzhmfj2  sigs: 23/300  newest: 315810360  oldest: 315120080  span: 690280  age: 436.1d (94202653 slots)  [█         ]
+  8YCde6Jm1Xz8FDiYS3R4AksgNVPEmrjNvkmdMnugEzrV  sigs: 300+/300  newest: 409908524  oldest: 389065067  span: 20843457  age: 11.6h (104489 slots)  [▆▄▃▁▄█▂▂▁▁]
+  8edBUkpBHCfLiGHYTx346GU2orxZJJ2W8pSKbVHMTrgk  sigs: 157/300  newest: 404594214  oldest: 327839885  span: 76754329  age: 25.1d (5418799 slots)  [█        ▁]
+  ... sleeping 5s before next chunk (6/19) ...
+  8nJS4VjWi5DHW7NfTCTNF4jmoNeBFw2W79cuBmRnQJ85  sigs: 3/300  newest: 356544611  oldest: 355229692  span: 1314919  age: 247.5d (53468402 slots)  [█         ]
+  99NLobEbhJTiaX5Va2aHWQbi7WacMHHRDuM273ysvw2i  sigs: 300+/300  newest: 252068652  oldest: 249753121  span: 2315531  age: 731.2d (157944361 slots)  [█         ]
+  9Fcn3Fd4d5ocrb12xCUtEvezxcjFEAyHBPfrZDiPt9Qj  sigs: 300+/300  newest: 396414292  oldest: 314601387  span: 81812905  age: 63.0d (13598721 slots)  [█▄▂▁▁▁▁▁▁ ]
+  9T7YMp5SXZvP3nqUj9B7rQGFErfMmh8t59jvxtV3CnjB  sigs: 5/300  newest: 364538756  oldest: 364508084  span: 30672  age: 210.5d (45474257 slots)  [█         ]
+  9dncxbzvTa4peZ9QRTh5ZziGWH5gBegD2FcSpYiWE1Jz  sigs: 1/300  newest: 92969648  oldest: 92969648  span: 0  age: 1467.8d (317043365 slots)  [█         ]
+  9tR2iUgt4MqUamgU2V6uqHmuV57HoUwmLrmsvo85i3Cg  sigs: 1/300  newest: 338073304  oldest: 338073304  span: 0  age: 333.1d (71939709 slots)  [█         ]
+  AU1Z9EhcsYL3YhYQmrxEXgA1N2WQBaebFFmMvDexXrZJ  sigs: 300+/300  newest: 395836296  oldest: 395835955  span: 341  age: 65.6d (14176717 slots)  [█         ]
+  AXRsZddcKo8BcHrbbBdXyHozSaRGqHc11ePh9ChKuoa1  sigs: 300+/300  newest: 258193652  oldest: 255503073  span: 2690579  age: 702.9d (151819361 slots)  [█         ]
+  AZfTAS39FavFfjaDW8kJw5424FBsJ5ot53M141hTbXPo  sigs: 300+/300  newest: 379855679  oldest: 378934772  span: 920907  age: 139.6d (30157334 slots)  [█         ]
+  AhnHLc1F971CMP7Na89dsLvqTWY6t9Ja1t9AG2872VkR  sigs: 300+/300  newest: 272683156  oldest: 218765550  span: 53917606  age: 635.8d (137329857 slots)  [█▁▁       ]
+  ... sleeping 5s before next chunk (7/19) ...
+  AkaPkLPahcAK5XhcG7AztnQP23GNonoKx5bEfqPNt3ro  sigs: 187/300  newest: 316771816  oldest: 315935824  span: 835992  age: 431.7d (93241197 slots)  [█         ]
+  Am9fK1xcRs819nnC81Qmf8qe1kVGMarR6Qc5P1D3nGME  sigs: 300+/300  newest: 410010630  oldest: 395379483  span: 14631147  age: 15.9m (2383 slots)  [█▂▁▃     ▅]
+  BDVd2hRqcBKxBCiy6AqGwnnCVYDQk5gNRzUz3UFYgfN9  sigs: 3/300  newest: 393926523  oldest: 393857152  span: 69371  age: 74.5d (16086490 slots)  [█         ]
+  BMETKJe2yowWQ46aiHGwDQaCvUUjuW8sFoxxCbnLFL4b  sigs: 300+/300  newest: 352428952  oldest: 235229768  span: 117199184  age: 266.6d (57584061 slots)  [▇▅▅▃▁ █   ]
+  BNVB8pd4coHpY7MVcrtiHLCLst7fyDGzMtPmfJqFAhwj  sigs: 300+/300  newest: 140609509  oldest: 133298929  span: 7310580  age: 1247.2d (269403504 slots)  [█         ]
+  BWFmc3iZhAwLyAZsNYLTgMzXsRMWSFJvE1rNShv2XM5J  sigs: 300+/300  newest: 406494438  oldest: 406215864  span: 278574  age: 16.3d (3518575 slots)  [█         ]
+  BX3HpkxVNbmpeT6PQhKV45rG7ytGY8WZRsHShnWYsr7X  sigs: 8/300  newest: 267727588  oldest: 267631391  span: 96197  age: 658.7d (142285425 slots)  [█         ]
+  BcyCjbQYxE2m2xTZ5tTZXDEz8Up7avTmPqhzCrASRKiQ  sigs: 300+/300  newest: 406058561  oldest: 373873122  span: 32185439  age: 18.3d (3954452 slots)  [█▅▁▁▁▁ ▁▁ ]
+  BeKUvdcQqje8VE2Cb6ZwJmXDoijoR33EEVcCnDXDyPVb  sigs: 2/300  newest: 338090576  oldest: 338090203  span: 373  age: 333.0d (71922437 slots)  [█         ]
+  BhjgX4qCM5jnhUwrrKVgAR8i6sjL5Kx3RYvdNuUVunCi  sigs: 18/300  newest: 89332256  oldest: 89308067  span: 24189  age: 1484.6d (320680757 slots)  [█         ]
+  ... sleeping 5s before next chunk (8/19) ...
+  ByaXLey8YP9doPCzmhGiN914297Mes1bzkwJSfPTLWXo  sigs: 300+/300  newest: 252969629  oldest: 251963915  span: 1005714  age: 727.1d (157043384 slots)  [█         ]
+  C4yTEvjNSgTnHwroy7uhtkQWi7qviMWcgwPgrxxEWMaF  sigs: 300+/300  newest: 331728113  oldest: 323184054  span: 8544059  age: 362.4d (78284900 slots)  [█         ]
+  C73nDAFn23RYwiFa6vtHshSbcg8x6BLYjw3bERJ3vHxf  sigs: 300+/300  newest: 410013102  oldest: 409963552  span: 49550  age: 0s (0 slots)  [█▅▆▆▅▅▅▅▅▆]
+  CHestawo8bRVEVW3bHUofBMtg3pQpWiBv7sRb2nhT9m  sigs: 300+/300  newest: 408382684  oldest: 340885224  span: 67497460  age: 7.5d (1630329 slots)  [▆█▅▄▄ ▁▃▁▁]
+  CMZYPASGWeTz7RNGHaRJfCq2XQ5pYK6nDvVQxzkH51zb  sigs: 300+/300  newest: 402220038  oldest: 401789417  span: 430621  age: 36.1d (7792975 slots)  [█         ]
+  CdP1piTMQNkJYbMCnUB7gYnXkA3iYrhWNFHiDnqVJUZ6  sigs: 18/300  newest: 405604471  oldest: 399677941  span: 5926530  age: 20.4d (4408542 slots)  [█ ▁▁▃▃    ]
+  CoTh2vLV87d3wBM7pgLYkkh4q7WBKcVGnVzL3ABuwVR4  sigs: 300+/300  newest: 410013023  oldest: 410003841  span: 9182  age: 0s (0 slots)  [▆▁▁▂▅▁▂█▅▆]
+  D1KbdySvAPF2TJh857hfmTUuiYAJSRoGLGNUQjwe3q8  sigs: 7/300  newest: 94562098  oldest: 92969931  span: 1592167  age: 1460.4d (315450915 slots)  [█         ]
+  DERP2sf1Nak1R7s5HVgQD9WcQM1X9CKh5Ru5PNafAsPg  sigs: 300+/300  newest: 409980572  oldest: 409006133  span: 974439  age: 3.6h (32441 slots)  [█▁▂▁▁▂▁▁▅▂]
+  DFGh1y9nCqYhKxCVgdgfefHNLTermhq65CFhvFPgVgdS  sigs: 1/300  newest: 350509950  oldest: 350509950  span: 0  age: 275.5d (59503063 slots)  [█         ]
+  ... sleeping 5s before next chunk (9/19) ...
+  DGxFkpLj6XntsMRz5Eru8ZoidYDFZgvTc2Ha7SjihfS3  sigs: 4/300  newest: 396983326  oldest: 396983164  span: 162  age: 60.3d (13029687 slots)  [█         ]
+  DM1fMsNs1Vk2K7A7SPKEchJiY1igKUAGkwxqRNFLT4sZ  sigs: 300+/300  newest: 385989614  oldest: 324213136  span: 61776478  age: 111.2d (24023399 slots)  [█▅▂▂▁▁▁▁  ]
+  DMVYowvuL1ybWTcWKQwkyqXChm3ptdSpCsZaAfNU8uDm  sigs: 80/300  newest: 145355236  oldest: 122739233  span: 22616003  age: 1225.3d (264657777 slots)  [█         ]
+  DRSs7XUjPMeY716VXxNMP7Jds9DRpDrvY6Kyy9CFwbf9  sigs: 300+/300  newest: 396617392  oldest: 357264820  span: 39352572  age: 62.0d (13395621 slots)  [▅▄█▄▃ ▄▃  ]
+  DTtqxoCrfNG5BzWjVLVnorXKTGZ5mDcMaBXxTzDsZuSB  sigs: 94/300  newest: 369057220  oldest: 364572674  span: 4484546  age: 189.6d (40955793 slots)  [█         ]
+  DgrQqeR5MTFkNNG94siEd5cDxdzgexSNwbv4FHdNW8f3  sigs: 1/300  newest: 365472236  oldest: 365472236  span: 0  age: 206.2d (44540777 slots)  [█         ]
+  DkoQWhYMhi7TVekxd6kR9eucZyvJLEZfzFnTgp67rwYv  sigs: 300+/300  newest: 408082695  oldest: 399604096  span: 8478599  age: 8.9d (1930318 slots)  [█▁      ▁ ]
+  DvAuML4qasM1vTrachSChQv5jwgVH29s59ejsybAVmbW  sigs: 300+/300  newest: 409989681  oldest: 409171196  span: 818485  age: 2.6h (23332 slots)  [▅▁ ▁  █▂▁▁]
+  DwSjfdK2CJuSaEGpLz64xnxzsr6eMBRZAHtvWycP4czx  sigs: 143/300  newest: 404256802  oldest: 386087049  span: 18169753  age: 26.6d (5756211 slots)  [█▁▁▂▂  ▁  ]
+  Dy86SpX7qwhPejbg9p8WSDrGmChFPxXuYFEbr4qRs12W  sigs: 300+/300  newest: 156211909  oldest: 149542819  span: 6669090  age: 1175.0d (253801104 slots)  [█         ]
+  ... sleeping 5s before next chunk (10/19) ...
+  EBN93eXs5fHGBABuajQqdsKRkCgaqtJa8vEFD6vKXiP  sigs: 300+/300  newest: 410009247  oldest: 407773729  span: 2235518  age: 25.1m (3766 slots)  [▇▇█▅▄▅▃▃▄▇]
+  ECQUvK1uZQjmqXZCPYN9EscUb2tS1kZ1gGVnn7r1Uc5f  sigs: 45/300  newest: 85512320  oldest: 85318250  span: 194070  age: 1502.3d (324500693 slots)  [█         ]
+  EFnubV4grWUCFRPkRTTNVxEdetxYb8VJtAAqQQmxmw8X  sigs: 15/300  newest: 398339752  oldest: 398183082  span: 156670  age: 54.0d (11673261 slots)  [█         ]
+  ENToMb8jNjwZjXhWt3ddqS8y98NXLSqjGDu6Ukur4UcF  sigs: 300+/300  newest: 409848448  oldest: 403504066  span: 6344382  age: 18.3h (164565 slots)  [▅▁▂▂▄▃▂▅█▂]
+  EXBuYPNgBUXMTsjCbezENRUtFQzjUNZxvPGTd11Pznk5  sigs: 300+/300  newest: 409999680  oldest: 408125978  span: 1873702  age: 1.5h (13333 slots)  [▄▃▄▂▅█▅▄▂▂]
+  EZ6hfUh5KoVTJHywMx9p1Q5tb8bTVYpHXm4J48LKChsr  sigs: 300+/300  newest: 408689354  oldest: 389032098  span: 19657256  age: 6.1d (1323659 slots)  [▅█▁▁▁ ▁▁ ▁]
+  EZiUb6ydWpR3ciizBTJ1J36KCqLyPKVjh4yZEJbs5Uno  sigs: 300+/300  newest: 410013192  oldest: 410006769  span: 6423  age: 0s (0 slots)  [▄▅▅▆▅▃▅▃▄█]
+  Ej8Ec13NXTUAGyj3VfxW5HKcdQcSgfwpmnVcTzjCueXf  sigs: 300+/300  newest: 409105558  oldest: 368948713  span: 40156845  age: 4.2d (907455 slots)  [█▂▁▄▁  ▁▁▁]
+  EzY2nFcqrCLrBw5K7ckNauhMBNhd15bjgNRdg6kXuZ8t  sigs: 300+/300  newest: 184293842  oldest: 181098352  span: 3195490  age: 1045.0d (225719171 slots)  [█         ]
+  F2BS6E8g3ho7wy8zMc6p4hQEvjhrvRhLgRzGfWuEhkRD  sigs: 300+/300  newest: 231612220  oldest: 231610764  span: 1456  age: 825.9d (178400793 slots)  [█         ]
+  ... sleeping 5s before next chunk (11/19) ...
+  F2rL5VpoLrc8uaKHtayaFCRj3ByDTWd6irEjSptYDmNF  sigs: 300+/300  newest: 409956371  oldest: 407012664  span: 2943707  age: 6.3h (56642 slots)  [█▁▁▃▂▁▁▁▁▂]
+  FFYU1ywDmwz16aFWMX58fsCdwk5oXAsnEGSYnCHLPBFx  sigs: 76/300  newest: 390778591  oldest: 372031334  span: 18747257  age: 89.0d (19234422 slots)  [▁ ▁█▁     ]
+  FRAGZZHbvqDwXkqaPSuKocS7EzH7rU7K6h6cW3GQAkEc  sigs: 1/300  newest: 277660948  oldest: 277660948  span: 0  age: 612.7d (132352065 slots)  [█         ]
+  FRGBrfuzTE9vjZVKBFA4eHgqyLdg5gPsJc8gLx3bSnPv  sigs: 2/300  newest: 402980389  oldest: 396770951  span: 6209438  age: 32.6d (7032624 slots)  [█   █     ]
+  FftDHpDwdmaVBYoNZ9ZdNxsXCQk7D8L1PFvJZzECSNDv  sigs: 300+/300  newest: 407228776  oldest: 369436512  span: 37792264  age: 12.9d (2784237 slots)  [▅▄█▇▆ ▅▅▂▃]
+  FqGg2Y1FNxMiGd51Q6UETixQWkF5fB92MysbYogRJb3P  sigs: 300+/300  newest: 410013224  oldest: 410007389  span: 5835  age: 0s (0 slots)  [▅▂█▄▃▃▄▃▅▅]
+  Ftaem8dtGhaDrcQCAkbVW7miSa9LqNkdq3tubKmb1ess  sigs: 30/300  newest: 248291649  oldest: 239636969  span: 8654680  age: 748.7d (161721364 slots)  [█         ]
+  FuNfQ5xVp4sdUh1goQ1yGdkoa153ggUCc7pBBqmwQxBR  sigs: 300+/300  newest: 330421705  oldest: 315890403  span: 14531302  age: 368.5d (79591308 slots)  [█▁        ]
+  G2d9iwvnihWxnzGFW11cEyn4sUgv7haLq9LFeMRMteoy  sigs: 277/300  newest: 310691692  oldest: 307949176  span: 2742516  age: 459.8d (99321321 slots)  [█         ]
+  G4AJxTXdr3Pma15PSsYAoKcEm8H2EoXHBhJb5TsVg3QE  sigs: 48/300  newest: 391323798  oldest: 390232272  span: 1091526  age: 86.5d (18689215 slots)  [█         ]
+  ... sleeping 5s before next chunk (12/19) ...
+  G4rfuPy7qEVczRqH2LBLJpcGUwBpNspxqi8XEYSqh1qp  sigs: 300+/300  newest: 359971052  oldest: 359969156  span: 1896  age: 231.7d (50041961 slots)  [█         ]
+  GJxSeDEs4Da9NSktNsGNBBr2BvxhbQHS8WgCED7SV5Ae  sigs: 86/300  newest: 409053847  oldest: 371930343  span: 37123504  age: 4.4d (959166 slots)  [█▇▂▂▂▁▄▂▃▅]
+  GQBqwwoikYh7p6KEUHDUu5r9dHHXx9tMGskAPubmFPzD  sigs: 300+/300  newest: 404162011  oldest: 404160922  span: 1089  age: 27.1d (5851002 slots)  [█         ]
+  GfyUP9mziko4u381SeLBb4D2ijTH4a9ruzBiA2hQAmwr  sigs: 300+/300  newest: 409951940  oldest: 409948202  span: 3738  age: 6.8h (61073 slots)  [█         ]
+  GnukyHhbXhqeswaZbzDiTLZeMSHMuWNTNxw4buhS6zpg  sigs: 300+/300  newest: 321319416  oldest: 252676269  span: 68643147  age: 410.6d (88693597 slots)  [█▁  ▁     ]
+  GuWu9crn1z2chmdtLQBt23eLNAAWrGtot8HFMBqgbLXZ  sigs: 34/300  newest: 343042836  oldest: 342780139  span: 262697  age: 310.0d (66970177 slots)  [█         ]
+  GvHPnJqothHhg5hyTDstNcGEjD8nJL9MeRsU1R6PUc1m  sigs: 300+/300  newest: 402868684  oldest: 400694017  span: 2174667  age: 33.1d (7144329 slots)  [█▅▁       ]
+  H9No547Qz6GefzK9fxvdMQc9pnsxSA9oRi97rjqsdxx  sigs: 300+/300  newest: 383708399  oldest: 382784250  span: 924149  age: 121.8d (26304614 slots)  [█         ]
+  HGB5eybkj4y6tmWbsipqEUkBBrjHNpHCT72TiomDzRYd  sigs: 300+/300  newest: 195854335  oldest: 189612411  span: 6241924  age: 991.5d (214158678 slots)  [█         ]
+  HH6Z1zgv591dEyPW3GWyJZjJkRpNLnj4Hop4mtB7VqQp  sigs: 300+/300  newest: 157608005  oldest: 154873243  span: 2734762  age: 1168.5d (252405008 slots)  [█         ]
+  ... sleeping 5s before next chunk (13/19) ...
+  HLCorec4bsTSiyzskDuAqrqD5NXDZeLhdvWqs7wjWRx5  sigs: 300+/300  newest: 410010662  oldest: 409996412  span: 14250  age: 15.7m (2351 slots)  [▂█▁▂ ▂▁ ▁ ]
+  HNdVE2S42ebusN1g64a6YBR4eCLnkeXcygKuMjBb5ohZ  sigs: 1/300  newest: 364539760  oldest: 364539760  span: 0  age: 210.5d (45473253 slots)  [█         ]
+  HPU1atfuvrySoBJjebbbGa253G7quBreNeBF1qZVDBid  sigs: 300+/300  newest: 409840456  oldest: 408050476  span: 1789980  age: 19.2h (172557 slots)  [▃▅▂▁▃█▂▁▇▁]
+  HTAXC4T8i9w95yLUxn6LfsiXGeZabMU6Lxc19mcr5FCL  sigs: 300+/300  newest: 330408228  oldest: 308595425  span: 21812803  age: 368.5d (79604785 slots)  [█▃▁       ]
+  HXfrMHGx97CqoHidGSNcHvdn2GWcgdaVKkT6S42bMAhX  sigs: 300+/300  newest: 408933415  oldest: 359491648  span: 49441767  age: 5.0d (1079598 slots)  [█▅▃▅▅▃▂▃▁▂]
+  HedgeEohwU6RqokrvPU4Hb6XKPub8NuKbnPmY7FoMMtN  sigs: 300+/300  newest: 402606475  oldest: 282511667  span: 120094808  age: 34.3d (7406538 slots)  [█▄▄▄▃▂ ▁▁▁]
+  HucrkqPP5RPQfwdbxTSE7fkmZ96U1ghFZHKbwcgoNDX5  sigs: 300+/300  newest: 382168965  oldest: 328272522  span: 53896443  age: 128.9d (27844048 slots)  [█▂▁   ▁   ]
+  J5EPh1YfWPjx9XBo8wYwEzqTTNNM3Jtz6PMJU5apq6L3  sigs: 129/300  newest: 281631265  oldest: 267970516  span: 13660749  age: 594.4d (128381748 slots)  [█         ]
+  J9s9SC5w4aDBEXHFiDvBg3aLGtLiVLpt48kgVnKCqTEw  sigs: 300+/300  newest: 409967833  oldest: 405021427  span: 4946406  age: 5.0h (45180 slots)  [▇█▆▃▁▁▁▂▁▁]
+  JAuCaCzdnyaPVo9SAo2vvrRV8KdDY6vxi7RUtdWoSVMV  sigs: 28/300  newest: 401290997  oldest: 395661444  span: 5629553  age: 40.4d (8722016 slots)  [█▁▁▂      ]
+  ... sleeping 5s before next chunk (14/19) ...
+  JB3iGFeeT1K8mWmdVzypBowsyG28DYTSSvdQgcdTfF7P  sigs: 300+/300  newest: 410012617  oldest: 409981295  span: 31322  age: 2.6m (396 slots)  [▇▇▅▂█▁  ▁▅]
+  JCCVogRcLpRGFPVv1e9J7dLbhCtcyD1tkrakwuRbHKYX  sigs: 21/300  newest: 328267424  oldest: 326114540  span: 2152884  age: 378.5d (81745589 slots)  [█         ]
+  LENCJ9MYbnTrMJgh8vBLpHnMkzrj6JP6m6XWvgA7jqz  sigs: 2/300  newest: 402980360  oldest: 396770828  span: 6209532  age: 32.6d (7032653 slots)  [█   █     ]
+  MPADHsfcZGTBMdimEQLwiDnz5k3cftA2v4nXmyb681x  sigs: 300+/300  newest: 273424988  oldest: 272455554  span: 969434  age: 632.4d (136588025 slots)  [█         ]
+  MstRVCHQanM57du34DKqTZfKH7FyTJXUtw7PT53tsSo  sigs: 300+/300  newest: 403539297  oldest: 314176937  span: 89362360  age: 30.0d (6473716 slots)  [█▁▁      ▁]
+  NovafW2TWyfaehyXSwH6VEVsDEYb5jBu9fosqqNhuWD  sigs: 300+/300  newest: 208964774  oldest: 196206116  span: 12758658  age: 930.8d (201048239 slots)  [█         ]
+  PHCX2VdrWDfQLFj3bYS77aoUZYwoXTubypcpK6eDR8v  sigs: 300+/300  newest: 336315077  oldest: 336314693  span: 384  age: 341.2d (73697936 slots)  [█         ]
+  Pinks8fXRcJ8EpNjK4vCf7saJ5hFeP9zRXGPwZrTukQ  sigs: 300+/300  newest: 409991802  oldest: 408393854  span: 1597948  age: 2.4h (21211 slots)  [█▁▁▁▁▁▁▁▁▂]
+  RAtEykjQ7gVM6q2T3cRLmdJxW6SyouVkpBwdoPkz3Ms  sigs: 300+/300  newest: 364321624  oldest: 329259051  span: 35062573  age: 211.5d (45691389 slots)  [█▇▅ ▁     ]
+  RAte2gSaXmo5YSbpGHDKpK64J7frAmonHBpi4odtyRV  sigs: 300+/300  newest: 409990814  oldest: 409547829  span: 442985  age: 2.5h (22199 slots)  [█▂▁▂▁▁▁▁▁▁]
+  ... sleeping 5s before next chunk (15/19) ...
+  RAtePjCQkLqCECgAWPgGaSje5rnoSbpHXc8HuBBZxaU  sigs: 300+/300  newest: 409989150  oldest: 402123587  span: 7865563  age: 2.7h (23863 slots)  [▇▇▆█▄▄▄▃▄▄]
+  RMDAZn6namua7Dm5WgQYy5f5vAtL61tviEgK8F5UEdo  sigs: 22/300  newest: 148379786  oldest: 147493342  span: 886444  age: 1211.3d (261633227 slots)  [█         ]
+  RainEraPU5yDoJmTrHdYynK9739GkEfDsE4ffqce2BR  sigs: 300+/300  newest: 408899647  oldest: 408897245  span: 2402  age: 5.2d (1113366 slots)  [█         ]
+  RatE8tuHWtSQSHqk9dtcZKQipUJfZXMvjxqFQuAjMnL  sigs: 300+/300  newest: 410001887  oldest: 408151815  span: 1850072  age: 1.2h (11126 slots)  [▁▃▂▂▁▂▁█▂▂]
+  RatEqyzDoJW8bAk2dBp9rTZCYykhLxt4P7CDxodKK1L  sigs: 300+/300  newest: 410003254  oldest: 406792220  span: 3211034  age: 1.1h (9759 slots)  [█▃▄▃▃▄▅▆▃▄]
+  RateFzvQT8Dz2HqDHAQj22ujp8B5kaBm2FUUkSoLgZm  sigs: 300+/300  newest: 410013067  oldest: 409623429  span: 389638  age: 0s (0 slots)  [█▅▄▅▄▃▅▃▃▃]
+  RouteUbg3kUbZgUEbBvfcxJvH5eVyTD2qCQoP71xnGv  sigs: 300+/300  newest: 160577429  oldest: 160577396  span: 33  age: 1154.8d (249435584 slots)  [█         ]
+  SAMmdq34d9RJoqoqfnGhMRUvZumQriaT55eGzXeAQj7  sigs: 300+/300  newest: 409989166  oldest: 405107664  span: 4881502  age: 2.6h (23847 slots)  [▅▃▂█▄▃▇▄▂▄]
+  STKRWxT4irmTthSJydggspWmkc3ovYHx62DHLPVv1f1  sigs: 300+/300  newest: 366329743  oldest: 362047632  span: 4282111  age: 202.2d (43683270 slots)  [█         ]
+  SYNMjud3ALEaeJhxuq8gpc2wJzC4XLHfxp9SgKmzQ8r  sigs: 300+/300  newest: 409975535  oldest: 407989698  span: 1985837  age: 4.2h (37478 slots)  [▆▆█▅▅▅▅▆▆▅]
+  ... sleeping 5s before next chunk (16/19) ...
+  TDEXSo3FBwoMeP6gv7abqPQpEQfwd5ArkzmuGqssjtY  sigs: 18/300  newest: 373115717  oldest: 372686814  span: 428903  age: 170.8d (36897296 slots)  [█         ]
+  TYCNv4LKQRbh7oGDi9MXQpnfKNubEieip7gRjr1qjp9  sigs: 300+/300  newest: 352233213  oldest: 332011668  span: 20221545  age: 267.5d (57779800 slots)  [█ ▁       ]
+  TeRxGfJEyixj1NM7bwprGoPtQ7j5PdZncQnsTZCyH17  sigs: 2/300  newest: 402980367  oldest: 396770464  span: 6209903  age: 32.6d (7032646 slots)  [█   █     ]
+  VECTfspxsFo1yGaHHrjGFZPh3XzNxpGbnqBtj4cvtEi  sigs: 28/300  newest: 299613292  oldest: 298466668  span: 1146624  age: 511.1d (110399721 slots)  [█         ]
+  WemgVqb14YangsvH7pq5oEFDnE5ECnom1p5VthVwnb4  sigs: 7/300  newest: 246103101  oldest: 246087600  span: 15501  age: 758.8d (163909912 slots)  [█         ]
+  YDU46N7aMNCzbDbmiUAugs2bikGCPdVMCwDevU5MPdB  sigs: 69/300  newest: 109968487  oldest: 85509281  span: 24459206  age: 1389.1d (300044526 slots)  [█         ]
+  bidoyoucCtwvPJwmW4W9ysXWeesgvGxEYxkXmoXTaHy  sigs: 300+/300  newest: 410008800  oldest: 404586029  span: 5422771  age: 28.1m (4213 slots)  [█▃▁▁ ▁▁▁▁▁]
+  cmbrLdggVpadQMe54SMWVvSA6ajswMSBtwnLG2xyqZE  sigs: 5/300  newest: 164126185  oldest: 164111284  span: 14901  age: 1138.4d (245886828 slots)  [█         ]
+  dpmAaVKNhfYDs8X5TqKGV9e4ktR829rzUaQshGjfpuL  sigs: 194/300  newest: 340454128  oldest: 330626868  span: 9827260  age: 322.0d (69558885 slots)  [█▄        ]
+  eStkFg1KsWpNmaeMh4PBDe19vh8iXc2YReXcuSyaVCC  sigs: 300+/300  newest: 393371042  oldest: 354191464  span: 39179578  age: 77.0d (16641971 slots)  [█▃▁▁▁▃▁▁  ]
+  ... sleeping 5s before next chunk (17/19) ...
+  fxBeDKeL3x3Y9oqtXYFbCgQM2x5NCXjRuFviffideB9  sigs: 6/300  newest: 94156836  oldest: 94147418  span: 9418  age: 1462.3d (315856177 slots)  [█         ]
+  kZEbvqfgeUPTdmzZzszW8Q6rZ8qvaRE3nV8zqfZHzA4  sigs: 300+/300  newest: 406119404  oldest: 354901774  span: 51217630  age: 18.0d (3893609 slots)  [█▆▁ ▁  ▂ ▁]
+  mcmt6YrQEMKw8Mw43FmpRLmf7BqRnFMKmAcbxE3xkAW  sigs: 300+/300  newest: 410013351  oldest: 410006667  span: 6684  age: 0s (0 slots)  [▂▃▄▅▃▂▄▃▃█]
+  minc9MLymfBSEs9ho1pUaXbQQPdfnTnxUvJa8TWx85E  sigs: 300+/300  newest: 183998830  oldest: 178428296  span: 5570534  age: 1046.4d (226014183 slots)  [█         ]
+  napCdeBtnYmzEwMZoqyLLZoRApUMEG943t3KSaJVVAa  sigs: 300+/300  newest: 372898217  oldest: 355496330  span: 17401887  age: 171.8d (37114796 slots)  [█▁▁▁      ]
+  ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4  sigs: 300+/300  newest: 408621432  oldest: 384049648  span: 24571784  age: 6.4d (1391581 slots)  [█▁       ▁]
+  nyao7yJbUCUS35Ykwdo7ZWY4p1raQR7uA3PS5zSLD1C  sigs: 300+/300  newest: 390384667  oldest: 309094572  span: 81290095  age: 90.9d (19628346 slots)  [█       ▁ ]
+  onchL7qGruBH2KNmccofz3oJ3HXBA1ZFYfv84am7fjK  sigs: 300+/300  newest: 399789044  oldest: 399756363  span: 32681  age: 47.3d (10223969 slots)  [█         ]
+  prev3Aed1x4f1ssrzgX7Lh7hu8FLUDs3cZaZWrNgSQr  sigs: 300+/300  newest: 409878888  oldest: 396761549  span: 13117339  age: 14.9h (134125 slots)  [▃▅█▁▂▁▁▂▁▁]
+  qistFZ8ijGbL1irDqQ3wceT8bLdFRrmQjNQmH5S15MK  sigs: 16/300  newest: 396482808  oldest: 396263716  span: 219092  age: 62.6d (13530205 slots)  [█         ]
+  ... sleeping 5s before next chunk (18/19) ...
+  qusdoMR334gSpMeD86jmQe7ivxNZLvHKapodXJWRrvQ  sigs: 300+/300  newest: 405097633  oldest: 386118260  span: 18979373  age: 22.8d (4915380 slots)  [█ ▁▂   ▁  ]
+  rAtEYiVSYnNEDcwqrFGwCbi7gFDYCssu2vmdozzyv4Q  sigs: 300+/300  newest: 407986337  oldest: 394559449  span: 13426888  age: 9.4d (2026676 slots)  [▇▆▃▂▁█▂▁▁ ]
+  rAte14X4CFgBXqPLEhmcLxkXVRoFthL3fcbBHVuvmxo  sigs: 300+/300  newest: 409992230  oldest: 403681895  span: 6310335  age: 2.3h (20783 slots)  [█▅▃▃▄▄▃▄▅▄]
+  rFLctqnUuxLmYsW5r9zNujfJx9hGpnP1csXr9PYwVgX  sigs: 300+/300  newest: 409996388  oldest: 408866955  span: 1129433  age: 1.8h (16625 slots)  [▂▂▂▂▁▁▁▂█▁]
+  rNfTQD84kwMbcRpWpLR92BVmxbuwrZc3o5HTauAZiXs  sigs: 300+/300  newest: 410013005  oldest: 409995400  span: 17605  age: 3s (8 slots)  [▅▅▆▇▅▅█▅▅█]
+  raTEMK3K8ahgwLuWUHEvp7aJXjVmcbNgj8XmQVMgt5q  sigs: 300+/300  newest: 410003674  oldest: 406268841  span: 3734833  age: 1.0h (9339 slots)  [▇█▅▂▃▃▃▃▂▃]
+  raTEkEMFeDsvsELyQ5CMk4dS8Yhh3wyXXRL6QESd7p2  sigs: 300+/300  newest: 409998433  oldest: 407451172  span: 2547261  age: 1.6h (14580 slots)  [█▅▅▅▃▅▆▄▄▅]
+  raTeAJ92EGM17TBENyDNvrsjmhhujvaanXCFKuxF494  sigs: 300+/300  newest: 409979961  oldest: 406255137  span: 3724824  age: 3.7h (33052 slots)  [▇▅▆▆▅▅▇▆▅█]
+  rateE3GompDX8X8a6WEqwve7kge6YwCGEhN8krmTFjB  sigs: 300+/300  newest: 409998348  oldest: 406630580  span: 3367768  age: 1.6h (14665 slots)  [█▂▄▃▅▅▄▃▃▄]
+  rateqk9kmMstT8SdVDyiV81Wuv4snjYyBjYoPkGqywK  sigs: 300+/300  newest: 410003262  oldest: 408629000  span: 1374262  age: 1.1h (9751 slots)  [█▇▅▅▆▄▆▆▅▄]
+  ... sleeping 5s before next chunk (19/19) ...
+  rbxKHT1j2EnkfvVgANWFXdcV5Sm8EkdZLLDjJ5R1Lwa  sigs: 300+/300  newest: 255004909  oldest: 228497822  span: 26507087  age: 717.6d (155008104 slots)  [█▁        ]
+  sLBRn9m2vnahEtgu5RN3Nqm8TxPPRdoYNWT2r6oEv4u  sigs: 300+/300  newest: 388433533  oldest: 380782059  span: 7651474  age: 99.9d (21579480 slots)  [█ ▆       ]
+  sqrEQZfYzby8jQrjv1FTxzn5qKpyjL3ZqpN8xdigQEm  sigs: 300+/300  newest: 247808274  oldest: 247331953  span: 476321  age: 750.9d (162204739 slots)  [█         ]
+  stPdYNaJNsV3ytS9Xtx4GXXXRcVqVS6x66ZFa26K39S  sigs: 300+/300  newest: 409660376  oldest: 406972962  span: 2687414  age: 1.6d (352637 slots)  [▂▁▁▂█   ▁ ]
+  syndicaxCJYfc8RfhFxiKZW52CpWyFUtDng6JUBpPKh  sigs: 300+/300  newest: 145272957  oldest: 128425156  span: 16847801  age: 1225.6d (264740056 slots)  [█         ]
+  vestjSC1M4SeKKKWroYprGfdcv2mrK8CH1xVEuwhDb1  sigs: 300+/300  newest: 409899188  oldest: 405640207  span: 4258981  age: 12.6h (113825 slots)  [█▅▄▃▂▂▂▃▂▁]
+  vtYo2ayiQJ53h2ePxK4kHNCbi8uspXhp1GyYu78mmbr  sigs: 13/300  newest: 364159104  oldest: 330605228  span: 33553876  age: 212.3d (45853909 slots)  [█   ▁     ]
+  vypertTtDgyQLMe8LVaVxJJmPfaDQZyzCMWdi3Fa3dc  sigs: 300+/300  newest: 399365716  oldest: 398844352  span: 521364  age: 49.3d (10647297 slots)  [█         ]
+  zVLTdc9GmsZ6zjS6bdSFWh7p3BdiPPyju9y82Cr7Vs3  sigs: 300+/300  newest: 410012973  oldest: 409511524  span: 501449  age: 16s (40 slots)  [█▄▃▆▃▄▄▆▄▄]
+
+Total programs:    189
+Total signatures:  38105
+Output:            rpc-out/1774929957-usage-mainnet.txt
