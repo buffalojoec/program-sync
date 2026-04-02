@@ -192,11 +192,52 @@ Every flagged V0 program has on-chain transaction history — none
 are abandoned. 34 were active within the last 24 hours. These are
 real, deployed, invoked programs.
 
+### Cross-Reference with Runtime Testing
+
+Alex independently tested SIMD-0460 by running a validator against mainnet
+with stack frame gaps disabled, identifying 12 programs with changed behavior:
+7 that fail differently and 5 that silently commit garbage.
+
+Cross-referencing against my static analysis flags:
+
+| Program | Runtime result | Tier 1 | Tier 2 |
+|---------|---------------|--------|--------|
+| `fat2dU...` | Fail | — | found |
+| `CroWg7...` | Fail | — | found |
+| `BGUMA...` | Fail | — | found |
+| `TCMPhJ...` | Fail | — | found |
+| `LBUZK...` | Fail | — | found |
+| `J88B7g...` | Fail | — | found |
+| `pyti8T...` | Fail | — | found |
+| `NeonVM...` | Garbage | — | found |
+| `cToken...` | Garbage | — | found |
+| `ZUPYzr...` | Garbage | — | **miss** |
+| `SySTEM...` | Garbage | — | found |
+| `DiabLo...` | Garbage | V2 (info) | found |
+
+**11 of 12** runtime-confirmed programs were caught by Tier 2's
+derived pointer tracing. None were caught by Tier 1's direct offset
+scan — the runtime failures are caused by cross-frame addressing
+patterns that only surface through register propagation.
+
+The single miss (`ZUPYzr87...`, "ZUPY Token Program") was not
+flagged by either tier — its failure pattern is not covered by the
+current detection passes.
+
+The `check_overlap.sh` script can be used to cross-reference the
+list of program IDs against the `--ids-out` files:
+
+```
+./check_overlap.sh tmp/tier2_ids.txt
+```
+
 ## Verdict
 
-All 189 flagged SBPFv0 programs access **currently unmapped
-memory** at the flagged instructions. The VM's translation-layer gap
-enforcement ([`MemoryRegion::vm_to_host()`][vm_to_host]) returns
+Of the 189 flagged SBPFv0 programs, 3 pairs share identical
+bytecode (deployed at different addresses), leaving **186 unique
+binaries**. All access **currently unmapped memory** at the flagged
+instructions. The VM's translation-layer gap enforcement
+([`MemoryRegion::vm_to_host()`][vm_to_host]) returns
 `AccessViolation` for gap addresses.
 
 - **186 programs** — negative gap only. Offsets exceed the 4 KiB
@@ -226,7 +267,8 @@ plausibly be reached. On-chain transaction history confirms all 189
 programs are deployed and invoked, but does not indicate whether the
 flagged paths are exercised.
 
-**Material risk is limited to 3 programs:**
+**Material risk is limited to 3 unique programs (none are
+duplicates):**
 
 - `ECQUvK1uZQjmqXZCPYN9EscUb2tS1kZ1gGVnn7r1Uc5f` — 1 hit at +24
 - `YDU46N7aMNCzbDbmiUAugs2bikGCPdVMCwDevU5MPdB` — 1 hit at +24
